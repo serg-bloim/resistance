@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+    <title>This is the title of the webpage!</title>
+    <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.2"></script>
+</head>
+<body>
+
+<div id="app">
+    <div>
+        <button v-on:click="panel='main'">main</button>
+        <button v-on:click="panel='player'">player</button>
+        <button v-on:click="panel='gamelist'">gamelist</button>
+        <button v-on:click="panel='game'" v-bind:disabled="!active_game.id">game</button>
+        <button v-on:click="panel='other'">other</button>
+    </div>
+    <div id="main" v-if="panel == 'main'">
+        main
+    </div>
+    <div id="player" v-else-if="panel == 'player'">
+        <h1>
+            Player
+        </h1>
+        <hr/>
+        <input type=text v-model="player.name"/>
+        <div>
+            {{ player.name }}
+        </div>
+        <div v-if="player.game">
+            In game: {{ player.game }}
+        </div>
+        <button v-on:click="player_submit()">Submit</button>
+    </div>
+    <div id="gamelist" v-else-if="panel == 'gamelist'">
+        List of games:
+        <ol>
+            <li v-for="game in gamelist">
+                <button v-on:click="joinGame(game)">
+                    {{ game.id }}
+                </button>
+                ({{ game.players.length }} players)
+            </li>
+        </ol>
+        <button v-on:click="create_game">New Game</button>
+        <button v-on:click="refresh_gamelist">Refresh</button>
+    </div>
+    <div id="game" v-else-if="panel == 'game'">
+        <h1>Game {{active_game.id}}</h1>
+        <span v-if="active_game.admin == player.id">[admin]</span>
+        <button v-on:click="leave_active_game">Leave</button>
+    </div>
+    <div id="other" v-else-if="console.log(this) && true">
+        other
+    </div>
+
+</div>
+
+<script src="/static/script.js"></script>
+
+</body>
+</html>
