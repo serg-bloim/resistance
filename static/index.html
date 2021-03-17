@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>This is the title of the webpage!</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/static/style.css">
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.2"></script>
 </head>
@@ -47,9 +47,25 @@
         <button v-on:click="refresh_gamelist">Refresh</button>
     </div>
     <div id="game" v-else-if="panel == 'game'">
-        <h1>Game {{active_game.id}}</h1>
-        <span v-if="active_game.admin == player.id">[admin]</span>
+        <h1>Game {{ active_game.id }}</h1>
+        Stage: {{active_game.stage}}
+        <div id="game-settings" v-if="show_game_settings">
+            <input type="number" v-model="game_settings_maxPlayers">
+            <input type="text" v-model="game_settings_rounds">
+            <button v-on:click="update_game_settings">Update</button>
+        </div>
+        <div>
+            <ol>
+            <li v-for="p in active_game.players">
+                <span v-bind:class="[player.id == p.id? 'me' : '', p.id == active_game.admin? 'admin' : '']">{{ p.name }}</span>
+                <span v-if="p.id == active_game.admin">admin</span>
+            </li>
+        </ol>
+        </div>
         <button v-on:click="leave_active_game">Leave</button>
+        <button v-on:click="update_active_game">Refresh</button>
+<!--        <button v-on:click="start_active_game" v-bind:disabled="!active_game.can_start_game">Start game</button>-->
+        <button v-on:click="start_active_game" v-bind:disabled="!active_game_can_start_game">Start game</button>
     </div>
     <div id="other" v-else-if="console.log(this) && true">
         other

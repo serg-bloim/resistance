@@ -3,7 +3,10 @@ from bottle import request, response
 GUEST_USER = '0'
 users={
     GUEST_USER:{'id':'0', 'name':'<noname>', 'game': ''},
-    '1':{'id':'1', 'name': 'Orange', 'game': ''}
+    '1':{'id':'1', 'name': 'Orange', 'game': ''},
+    '2':{'id':'1', 'name': 'Blue', 'game': ''},
+    '3':{'id':'1', 'name': 'Simple', 'game': ''},
+    '4':{'id':'1', 'name': 'TryHard', 'game': ''},
     }
 
 def get_user_id():
