@@ -11,7 +11,7 @@ new Vue({
         player: {
             name: "undefined"
         },
-        active_game: {},
+        active_game: {playermap:{}},
         gamelist: [{
                 id: 'game1',
                 players: []
@@ -66,6 +66,10 @@ new Vue({
         update_active_game: function() {
             this.$http.get('/api/games/active').then(resp => {
                 this.active_game = resp.body
+                this.active_game.playermap = {}
+                this.active_game.players.forEach( p=>
+                    this.active_game.playermap[p.id] = p
+                )
             }, resp => {
                 this.active_game = {}
             })
@@ -102,6 +106,26 @@ new Vue({
                 this.update_active_game()
             })
         },
+        clear_voting() {
+            this.$http.delete(`/api/games/${this.active_game.id}/votes/latest`).then(resp => {
+                this.update_active_game()
+            })
+        },
+        vote(ballot) {
+            this.$http.put(`/api/games/${this.active_game.id}/vote`,{'vote': ballot}).then(resp => {
+                this.update_active_game()
+            })
+        },
+        delete_vote() {
+            this.$http.delete(`/api/games/${this.active_game.id}/vote`).then(resp => {
+                this.update_active_game()
+            })
+        },
+        reveal_vote() {
+            this.$http.post(`/api/games/${this.active_game.id}/vote/reveal`).then(resp => {
+                this.update_active_game()
+            })
+        },
         update_game_settings() {
             this.active_game.settings.maxPlayers = parseInt(this.active_game.settings.maxPlayers)
             data = {
@@ -124,6 +148,9 @@ new Vue({
         },
                 player_classes(p){
             return  [this.player.id == p.id? 'me' : '', p.id == this.active_game.admin? 'admin' : ''].concat(this.active_game.roles[p.id])
+        },
+        vote_result(vote){
+            return   Object.values(vote).every( v=>{return v}) ? 'Positive' : 'Negative'
         },
     },
     created: function() {

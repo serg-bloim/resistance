@@ -62,6 +62,9 @@ def api_create_game():
     game = {'id': next_game_name,
             'admin': me['id'],
             'stage': 'pending',
+            'turn': 0,
+            'vote': {},
+            'vote_log': [],
             'settings': {
                 'maxPlayers': 6,
                 'impostors': 2,
@@ -124,6 +127,40 @@ def api_join_game(gid):
     return 'added'
 
 
+@put('/api/games/<gid>/vote')
+def api_vote(gid):
+    game = games[gid]
+    me = get_current_user()
+    if not me['game'] == gid:
+        return HTTPResponse("User " + me['name'] + " is not in the game " + game['id'], 400)
+    game['vote'][me['id']] = request.json['vote']
+    return 'accepted'
+
+
+@delete('/api/games/<gid>/vote')
+def api_delete_vote(gid):
+    game = games[gid]
+    me = get_current_user()
+    if not me['game'] == gid:
+        return HTTPResponse("User " + me['name'] + " is not in the game " + game['id'], 400)
+    if me['id'] in game['vote']:
+        del game['vote'][me['id']]
+    return 'deleted'
+
+
+@post('/api/games/<gid>/vote/reveal')
+def api_reveal_vote(gid):
+    game = games[gid]
+    me = get_current_user()
+    if not me['game'] == gid:
+        return HTTPResponse("User " + me['name'] + " is not in the game " + game['id'], 400)
+    if len(game['vote']) == 0:
+        return HTTPResponse("There is no voting in game " + game['id'], 400)
+    game['vote_log'].append(game['vote'])
+    game['vote'] = {}
+    return 'deleted'
+
+
 def is_admin(game, me):
     return game['admin'] == me['id']
 
@@ -135,14 +172,17 @@ def api_start_game(gid):
     if not is_admin(game, me):
         return HTTPResponse("Only admin can start the game", 403)
     if not game['stage'] == 'pending':
-        return HTTPResponse("Cannot start game "+gid+". Cannot start a game in stage '"+game['stage']+"'. Only 'pending'", 400)
+        return HTTPResponse(
+            "Cannot start game " + gid + ". Cannot start a game in stage '" + game['stage'] + "'. Only 'pending'", 400)
     if not len(game['players']) == game['settings']['maxPlayers']:
-        return HTTPResponse("Cannot start game "+gid+". Players should match maxPlayers setting", 400)
+        return HTTPResponse("Cannot start game " + gid + ". Players should match maxPlayers setting", 400)
     game['stage'] = 'started'
     players = game['players']
     impostors = [p['id'] for p in random.sample(players, game['settings']['impostors'])]
+
     def computeRoles(pid):
         return ['impostor' if pid in impostors else 'civ']
+
     game['roles'] = {p['id']: computeRoles(p['id']) for p in game['players']}
     return 'started'
 
