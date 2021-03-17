@@ -10,6 +10,7 @@
 
 <div id="app">
     <div>
+        Menu:
 <!--        <button v-on:click="panel='main'">main</button>-->
         <button v-on:click="panel='player'">player</button>
         <button v-on:click="panel='gamelist'">gamelist</button>
@@ -39,6 +40,9 @@
             In game: {{ player.game }}
         </div>
         <button v-on:click="player_submit()">Submit</button>
+        <p>
+            Help: On this screen you can change your name and avatar(url). Don't forget to hit Submit after change
+        </p>
     </div>
     <div id="gamelist" v-else-if="panel == 'gamelist'">
         List of games:
@@ -52,14 +56,17 @@
         </ol>
         <button v-on:click="create_game">New Game</button>
         <button v-on:click="refresh_gamelist">Refresh</button>
+        <p>Help: On this screen can see a list of current games you can join. You can join only 1 game at a time. You can also create a new game.</p>
+        <p>Press [Refresh] to get updates from server</p>
+
     </div>
     <div id="game" v-else-if="panel == 'game'">
+        <h1>Game {{ active_game.id }}</h1>
         <div>
             <button v-on:click="leave_active_game">Leave</button>
             <button v-on:click="update_active_game">Refresh</button>
 <!--            <button v-on:click="clear_voting">Clear Voting</button>-->
         </div>
-        <h1>Game {{ active_game.id }}</h1>
         <div>
             <ol>
                 <li v-for="p in active_game.players" class="player-row">
@@ -99,7 +106,11 @@
 
 
         </div>
-
+        <p>Help: On this screen you can vote and see how people voted previously.</p>
+        <p>Press [Refresh] to get updates from server</p>
+        <p>To vote in current round you need to press either [Vote Positive] or [Vote Negative] button, you can change your decision and press another button.</p>
+        <p>If you changed your mind and decided you don't want to vote this round, press [Delete vote]</p>
+        <p>After all required players voted, press [Reveal] and you'll see  a new entry in the vote log section</p>
     </div>
     <div id="other" v-else-if="console.log(this) && true">
         other
