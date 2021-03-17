@@ -7,27 +7,7 @@ from users import *
 from validations import *
 
 cache = 0
-games = {'game1': {'id': 'game1',
-                   'admin': 1,
-                   'settings': {
-                       'maxPlayers': 6,
-                       'impostors': 2,
-                       'rounds': [2, 3, 4, 3, 2],
-                   },
-                   'stage': 'pending',
-                   'players': [{'id': 1, 'name': 'Orange'}, {'id': 2, 'name': 'Red'},
-                               {'id': 3, 'name': 'Green'}, {'id': 4, 'name': 'Purple'}],
-                   # 'players': [1, 2, 3, 4],
-                   'voting': {
-                       'id': 1,
-                       'proposal': ['Orange', 'Green'],
-                       'votes': {
-                           '1': 'yes',
-                           '2': 'no',
-                           '3': 'undefined'
-                       }
-                   }
-                   }}
+games = {}
 
 
 @route('/')

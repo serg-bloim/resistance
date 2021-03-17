@@ -10,11 +10,11 @@
 
 <div id="app">
     <div>
-        <button v-on:click="panel='main'">main</button>
+<!--        <button v-on:click="panel='main'">main</button>-->
         <button v-on:click="panel='player'">player</button>
         <button v-on:click="panel='gamelist'">gamelist</button>
         <button v-on:click="panel='game'" v-bind:disabled="!active_game.id">game</button>
-        <button v-on:click="panel='other'">other</button>
+<!--        <button v-on:click="panel='other'">other</button>-->
     </div>
     <div id="main" v-if="panel == 'main'">
         main
@@ -24,8 +24,9 @@
             Player
         </h1>
         <hr/>
-        <input type=text v-model="player.name"/>
-        <input type=text v-model="player.avatar"/>
+        <div>Name: <input type=text v-model="player.name"/></div>
+        <div>Avatar URL: <input type=text v-model="player.avatar"/></div>
+
         <div>
             {{ player.name }}
         </div>
@@ -64,7 +65,7 @@
                 <li v-for="p in active_game.players" class="player-row">
 
                     <div class="avatar">
-                        <img v-bind:src="p.avatar"/>
+                        <img v-bind:src="p.avatar" v-bind:alt="p.name"/>
                     </div>
                     <span v-bind:class="player_classes(p)">{{ p.name }}</span>
                     <span v-if="p.id == active_game.admin">[admin]</span>
@@ -87,12 +88,12 @@
                     <td>{{pair.ind+1}}</td>
                     <td>
                             <span v-for="pid in Object.keys(pair.vote)">
-                                <div class="avatar">
-                                    <img v-bind:src="active_game.playermap[pid].avatar"/>
+                                <div class="avatar" :set="player = active_game.playermap[pid]">
+                                    <img v-bind:src="player.avatar" v-bind:alt="player.name"/>
                                  </div>
                             </span>
                     </td>
-                    <td>{{ vote_result(vote) }}</td>
+                    <td>{{ vote_result(pair.vote) }}</td>
                 </tr>
             </table>
 

@@ -1,3 +1,6 @@
+import random
+import string
+
 from bottle import request, response
 
 GUEST_USER = '0'
@@ -23,7 +26,8 @@ def is_user_logged_in():
 
 def register_new_user(name='New Player', resp=response):
     uid = str(max((int(uid) for uid in users.keys()))+1)
-    user = {'id':uid, 'name':name, 'game':''}
+    avatar_sid = ''.join(random.choice(string.ascii_lowercase) for x in range(6))
+    user = {'id': uid, 'name': name, 'game': '', 'avatar': 'https://robohash.org/'+avatar_sid}
     print('registering new user: ' + str(user))
     print('users before ' + str(users))
     users[uid] = user
