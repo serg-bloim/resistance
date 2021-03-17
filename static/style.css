@@ -2,5 +2,8 @@
     font-weight: bold;
 }
 .admin {
+    text-decoration: underline;
+}
+.impostor {
     color: red;
 }

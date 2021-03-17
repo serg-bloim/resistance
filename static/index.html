@@ -51,13 +51,14 @@
         Stage: {{active_game.stage}}
         <div id="game-settings" v-if="show_game_settings">
             <input type="number" v-model="game_settings_maxPlayers">
+            <input type="number" v-model="game_settings_impostors">
             <input type="text" v-model="game_settings_rounds">
             <button v-on:click="update_game_settings">Update</button>
         </div>
         <div>
             <ol>
             <li v-for="p in active_game.players">
-                <span v-bind:class="[player.id == p.id? 'me' : '', p.id == active_game.admin? 'admin' : '']">{{ p.name }}</span>
+                <span v-bind:class="player_classes(p)">{{ p.name }}</span>
                 <span v-if="p.id == active_game.admin">admin</span>
             </li>
         </ol>

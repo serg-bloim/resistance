@@ -1,4 +1,6 @@
 # A very simple Bottle Hello World app for you to get started with...
+import random
+
 from bottle import default_app, route, static_file, put, get, delete, HTTPResponse, post
 
 from users import *
@@ -9,7 +11,7 @@ games = {'game1': {'id': 'game1',
                    'admin': 1,
                    'settings': {
                        'maxPlayers': 6,
-                       # 'impostors': 2,
+                       'impostors': 2,
                        'rounds': [2, 3, 4, 3, 2],
                    },
                    'stage': 'pending',
@@ -62,10 +64,12 @@ def api_create_game():
             'stage': 'pending',
             'settings': {
                 'maxPlayers': 6,
-                # 'impostors': 2,
+                'impostors': 2,
                 'rounds': [2, 3, 4, 3, 2],
             },
-            'players': [me]}
+            'players': [me],
+            'roles': {},
+            }
     games[next_game_name] = game
     me['game'] = next_game_name
     return populate_users(game)
@@ -135,7 +139,11 @@ def api_start_game(gid):
     if not len(game['players']) == game['settings']['maxPlayers']:
         return HTTPResponse("Cannot start game "+gid+". Players should match maxPlayers setting", 400)
     game['stage'] = 'started'
-
+    players = game['players']
+    impostors = [p['id'] for p in random.sample(players, game['settings']['impostors'])]
+    def computeRoles(pid):
+        return ['impostor' if pid in impostors else 'civ']
+    game['roles'] = {p['id']: computeRoles(p['id']) for p in game['players']}
     return 'started'
 
 

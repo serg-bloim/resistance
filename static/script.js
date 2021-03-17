@@ -106,6 +106,7 @@ new Vue({
             this.active_game.settings.maxPlayers = parseInt(this.active_game.settings.maxPlayers)
             data = {
                 maxPlayers: parseInt(this.temp.active_game_settings.maxPlayers),
+                impostors: parseInt(this.temp.active_game_settings.impostors),
                 rounds: this.temp.active_game_settings.rounds.trim().split(' ').map(v => {
                     return parseInt(v.trim())
                 })
@@ -120,6 +121,9 @@ new Vue({
                     this.update_active_game()
                 }
             )
+        },
+                player_classes(p){
+            return  [this.player.id == p.id? 'me' : '', p.id == this.active_game.admin? 'admin' : ''].concat(this.active_game.roles[p.id])
         },
     },
     created: function() {
@@ -137,10 +141,26 @@ new Vue({
                 if (!this.temp.active_game_settings) {
                     this.temp.active_game_settings = {
                         maxPlayers: this.active_game.settings.maxPlayers,
+                        impostors:this.active_game.settings.impostors,
                         rounds: this.active_game.settings.rounds.join(' ')
                     }
                 }
                 this.temp.active_game_settings.maxPlayers = v
+            }
+        },
+         game_settings_impostors: {
+            get() {
+                return this.temp.active_game_settings ? this.temp.active_game_settings.impostors : this.active_game.settings.impostors
+            },
+            set(v) {
+                if (!this.temp.active_game_settings) {
+                    this.temp.active_game_settings = {
+                        maxPlayers: this.active_game.settings.maxPlayers,
+                        impostors:this.active_game.settings.impostors,
+                        rounds: this.active_game.settings.rounds.join(' ')
+                    }
+                }
+                this.temp.active_game_settings.impostors = v
             }
         },
         game_settings_rounds: {
@@ -151,6 +171,7 @@ new Vue({
                 if (!this.temp.active_game_settings) {
                     this.temp.active_game_settings = {
                         maxPlayers: this.active_game.settings.maxPlayers,
+                        impostors:this.active_game.settings.impostors,
                         rounds: this.active_game.settings.rounds.join(' ')
                     }
                 }
@@ -161,7 +182,8 @@ new Vue({
             return this.show_game_settings && this.active_game.admin == this.player.id && this.active_game.settings.maxPlayers == this.active_game.players.length
         },
         show_game_settings(){
-        return  this.active_game.stage == 'pending'
+            return  this.active_game.stage == 'pending'
         },
+
     }
 })
