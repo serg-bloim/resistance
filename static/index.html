@@ -25,8 +25,14 @@
         </h1>
         <hr/>
         <input type=text v-model="player.name"/>
+        <input type=text v-model="player.avatar"/>
         <div>
             {{ player.name }}
+        </div>
+        <div>
+            <div class="avatar">
+                <img v-bind:src="player.avatar"/>
+            </div>
         </div>
         <div v-if="player.game">
             In game: {{ player.game }}
@@ -47,14 +53,23 @@
         <button v-on:click="refresh_gamelist">Refresh</button>
     </div>
     <div id="game" v-else-if="panel == 'game'">
+        <div>
+            <button v-on:click="leave_active_game">Leave</button>
+            <button v-on:click="update_active_game">Refresh</button>
+<!--            <button v-on:click="clear_voting">Clear Voting</button>-->
+        </div>
         <h1>Game {{ active_game.id }}</h1>
         <div>
             <ol>
-            <li v-for="p in active_game.players">
-                <span v-bind:class="player_classes(p)">{{ p.name }}</span>
-                <span v-if="p.id == active_game.admin">admin</span>
-            </li>
-        </ol>
+                <li v-for="p in active_game.players" class="player-row">
+
+                    <div class="avatar">
+                        <img v-bind:src="p.avatar"/>
+                    </div>
+                    <span v-bind:class="player_classes(p)">{{ p.name }}</span>
+                    <span v-if="p.id == active_game.admin">[admin]</span>
+                </li>
+            </ol>
         </div>
         <div id="vote">
             <div>{{ Object.keys(active_game.vote).length }} voted</div>
@@ -67,17 +82,23 @@
         </div>
 
         <div id="vote_log">
-            <div v-for="vote in active_game.vote_log">
-                <span v-for="pid in Object.keys(vote)">
-                    {{ active_game.playermap[pid].name }}
-                </span>
-                {{ vote_result(vote) }}
-            </div>
+            <table>
+                <tr v-for="pair in active_game.vote_log.map((elem, ind)=> {return {'ind':ind, 'vote':elem}}).reverse()">
+                    <td>{{pair.ind+1}}</td>
+                    <td>
+                            <span v-for="pid in Object.keys(pair.vote)">
+                                <div class="avatar">
+                                    <img v-bind:src="active_game.playermap[pid].avatar"/>
+                                 </div>
+                            </span>
+                    </td>
+                    <td>{{ vote_result(vote) }}</td>
+                </tr>
+            </table>
+
+
         </div>
-        <button v-on:click="leave_active_game">Leave</button>
-        <button v-on:click="update_active_game">Refresh</button>
-        <button v-on:click="clear_voting">Refresh</button>
-<!--        <button v-on:click="start_active_game" v-bind:disabled="!active_game.can_start_game">Start game</button>-->
+
     </div>
     <div id="other" v-else-if="console.log(this) && true">
         other

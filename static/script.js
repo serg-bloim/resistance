@@ -3,7 +3,8 @@ new Vue({
     data: {
         original: {
             player: {
-                name: "undefined"
+                name: "undefined",
+                avatar: "123"
             },
         },
         temp: {},
@@ -45,7 +46,7 @@ new Vue({
     methods: {
         player_submit: function() {
             console.log("Name is: " + this.player.name)
-            this.$http.put('/api/users/' + this.player.id, this.player).then(response => {
+            return this.$http.put('/api/users/' + this.player.id, this.player).then(response => {
                 this.update_user_internal(response.body)
             })
         },
@@ -54,7 +55,7 @@ new Vue({
             this.original.player = Object.assign({}, this.player)
         },
         update_user: function() {
-            this.$http.get('/api/whoami').then(response => {
+            return this.$http.get('/api/whoami').then(response => {
                 this.update_user_internal(response.body)
             })
         },
@@ -64,7 +65,7 @@ new Vue({
             })
         },
         update_active_game: function() {
-            this.$http.get('/api/games/active').then(resp => {
+            return this.$http.get('/api/games/active').then(resp => {
                 this.active_game = resp.body
                 this.active_game.playermap = {}
                 this.active_game.players.forEach( p=>
@@ -157,7 +158,14 @@ new Vue({
         console.log("created hook")
         this.update_user();
         this.refresh_gamelist();
-        this.update_active_game();
+        this.update_active_game().then(()=>{
+                if(this.active_game.id){
+                    this.panel = 'game'
+                }else{
+                    this.panel = 'gamelist'
+                }
+            }
+        );
     },
     computed: {
         game_settings_maxPlayers: {

@@ -7,3 +7,15 @@
 .impostor {
     color: red;
 }
+.avatar{
+    width: 64px;
+    height: 64px;
+    display: inline-block;
+}
+.avatar img{
+    max-width: 100%;
+    max-height: auto;
+}
+.player-row {
+
+}

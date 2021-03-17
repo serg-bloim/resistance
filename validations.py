@@ -14,4 +14,4 @@ def validate_game_settings_update(game_settings_update):
 
 
 def validate_user_update(user_upd):
-    pass
+    return True

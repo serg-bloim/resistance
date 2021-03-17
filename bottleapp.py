@@ -196,10 +196,12 @@ def whoami():
 def update_user(uid):
     me = get_current_user()
     if uid != me['id']:
-        HTTPResponse("You cannot change another user", 403)
+        return HTTPResponse("You cannot change another user", 403)
     upd = request.json
-    validate_user_update(upd)
+    if not validate_user_update(upd):
+        return HTTPResponse("You cannot change another user", 400)
     users[uid]['name'] = upd['name']
+    users[uid]['avatar'] = upd['avatar']
     return users[uid]
 
 
